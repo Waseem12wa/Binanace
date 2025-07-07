@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Sweep Detection System v3</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0/dist/chartjs-plugin-annotation.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@3.3.0/dist/chartjs-chart-financial.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Advanced Sweep Detection System</h1>
+        <p>Real-time Reversal Zone Detection with High Accuracy</p>
+        <div class="status-indicator status-live"></div>
+        <span>Live Detection Active</span>
+    </div>
+
+    <div class="controls">
+        <div class="control-group">
+            <h3>Market Settings</h3>
+            <div class="form-group">
+                <label>Market Type:</label>
+                <select id="marketType">
+                    <option value="crypto">Crypto</option>
+                    <option value="forex">Forex</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Trading Pair:</label>
+                <select id="tradingPair">
+                    <!-- Crypto pairs -->
+                    <option value="BTCUSDT" data-market="crypto">BTC/USDT (LIVE)</option>
+                    <option value="ETHUSDT" data-market="crypto">ETH/USDT (LIVE)</option>
+                    <option value="ADAUSDT" data-market="crypto">ADA/USDT (LIVE)</option>
+                    <option value="DOTUSDT" data-market="crypto">DOT/USDT (LIVE)</option>
+                    <option value="LINKUSDT" data-market="crypto">LINK/USDT (LIVE)</option>
+                    <!-- Forex pairs -->
+                    <option value="EURUSD" data-market="forex">EUR/USD (LIVE)</option>
+                    <option value="GBPUSD" data-market="forex">GBP/USD (LIVE)</option>
+                    <option value="USDJPY" data-market="forex">USD/JPY (LIVE)</option>
+                    <option value="AUDUSD" data-market="forex">AUD/USD (LIVE)</option>
+                    <option value="USDCHF" data-market="forex">USD/CHF (LIVE)</option>
+                    <option value="NZDUSD" data-market="forex">NZD/USD (LIVE)</option>
+                    <option value="USDCAD" data-market="forex">USD/CAD (LIVE)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Timeframe:</label>
+                <select id="timeframe">
+                    <option value="1m">1 Minute</option>
+                    <option value="5m">5 Minutes</option>
+                    <option value="15m">15 Minutes</option>
+                    <option value="1h">1 Hour</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="control-group" style="display:none;">
+            <h3>Sweep Detection</h3>
+            <div class="form-group">
+                <label>Min Sweep Level:</label>
+                <input type="number" id="minSweep" value="0.5" step="0.1" min="0.1" max="5.0">
+            </div>
+            <div class="form-group">
+                <label>Session Time (Hours):</label>
+                <input type="number" id="sessionTime" value="4" min="1" max="24">
+            </div>
+            <div class="form-group">
+                <label>Lookback Candles:</label>
+                <input type="number" id="lookbackCandles" value="50" min="10" max="200">
+            </div>
+        </div>
+
+        <div class="control-group" style="display:none;">
+            <h3>Signal Filters</h3>
+            <div class="form-group">
+                <label>Bullish Threshold (%):</label>
+                <input type="number" id="bullishThreshold" value="65" min="50" max="95">
+            </div>
+            <div class="form-group">
+                <label>Bearish Threshold (%):</label>
+                <input type="number" id="bearishThreshold" value="65" min="50" max="95">
+            </div>
+            <div class="form-group">
+                <label>Volume Filter:</label>
+                <select id="volumeFilter">
+                    <option value="high">High Volume Only</option>
+                    <option value="medium">Medium+ Volume</option>
+                    <option value="all">All Volume</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>Controls</h3>
+            <button class="btn" onclick="startDetection()">Start Detection</button>
+            <button class="btn" onclick="stopDetection()">Stop Detection</button>
+            <button class="btn" onclick="resetStats()">Reset Stats</button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="chart-container">
+            <canvas id="priceChart"></canvas>
+        </div>
+        <!-- TradingView Widget BEGIN -->
+        <div class="tradingview-widget-container" style="margin-top: 30px;">
+          <div id="tradingview_btcusdt"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+          <script type="text/javascript">
+            new TradingView.widget({
+              "width": "100%",
+              "height": 500,
+              "symbol": "BINANCE:BTCUSDT",
+              "interval": "1",
+              "timezone": "Etc/UTC",
+              "theme": "dark",
+              "style": "1",
+              "locale": "en",
+              "toolbar_bg": "#222",
+              "enable_publishing": false,
+              "hide_top_toolbar": false,
+              "save_image": false,
+              "container_id": "tradingview_btcusdt"
+            });
+          </script>
+        </div>
+        <!-- TradingView Widget END -->
+
+        <div class="stats-container">
+            <div class="stats-box">
+                <h3>Detection Statistics</h3>
+                <div class="accuracy-meter">
+                    <div class="accuracy-circle" style="--accuracy-deg: 324deg;">
+                        <div class="accuracy-inner">
+                            <span id="accuracyPercent">90%</span>
+                        </div>
+                    </div>
+                    <p>Current Accuracy</p>
+                </div>
+                <div class="stat-item">
+                    <span>COUNT BARS:</span>
+                    <span class="stat-value" id="countBars">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>COUNT ENTRIES:</span>
+                    <span class="stat-value" id="countEntries">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>WIN:</span>
+                    <span class="stat-value" id="winCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>LOSS:</span>
+                    <span class="stat-value" id="lossCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>WIN RATE:</span>
+                    <span class="stat-value" id="winRate">0%</span>
+                </div>
+            </div>
+
+            <div class="stats-box">
+                <h3>Live Signals</h3>
+                <div id="signalsLog" class="signals-log">
+                    <!-- Signals will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html> 

@@ -1,0 +1,229 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: #181c20;
+    color: #e0e0e0;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #23272b;
+    border-radius: 10px;
+}
+
+.header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    color: #e0e0e0;
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: unset;
+    background-clip: unset;
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.control-group {
+    background: #23272b;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #333;
+}
+
+.control-group h3 {
+    margin-bottom: 15px;
+    color: #4ecdc4;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #23272b;
+    color: #e0e0e0;
+    font-size: 14px;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.btn {
+    background: #4ecdc4;
+    color: #181c20;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background: #38b6a8;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+.chart-container {
+    background: #23272b;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.stats-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.stats-box {
+    background: #23272b;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #333;
+}
+
+.stats-box h3 {
+    margin-bottom: 15px;
+    color: #4ecdc4;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+}
+
+.stat-value {
+    font-weight: bold;
+    color: #4ecdc4;
+}
+
+.signals-log {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.signal-entry {
+    background: #23272b;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border-left: 4px solid;
+}
+
+.signal-entry.bullish {
+    border-left-color: #4ecdc4;
+}
+
+.signal-entry.bearish {
+    border-left-color: #ff6b6b;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.status-live {
+    background: #4ecdc4;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.accuracy-meter {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.accuracy-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #181c20;
+    border: 2px solid #4ecdc4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    position: relative;
+}
+
+.accuracy-inner {
+    width: 80px;
+    height: 80px;
+    background: #23272b;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #4ecdc4;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .controls {
+        grid-template-columns: 1fr;
+    }
+} 
+
+/* Add to existing CSS */
+.chartjs-render-monitor {
+    contain: none !important;
+}
+
+/* Style for signal markers */
+.chartjs-dataset-signal .point {
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
